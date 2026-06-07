@@ -26,3 +26,10 @@ printf("%c",picture[i][j]);
 printf("\n");
 }
 }
+void setPixel(int x,int y)
+{
+  if(x>=0 && x<WIDTH && y>=0 && y<HEIGHT)
+{
+picture[y][x]=PIXEL;
+}
+}
