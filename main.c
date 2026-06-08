@@ -33,3 +33,19 @@ void setPixel(int x,int y)
 picture[y][x]=PIXEL;
 }
 }
+void drawLine(int x1,int y1,int x2,int y2)
+{
+  int dx=x2-x1;
+int dy=y2-y1;
+int steps=abs(dx)>abs(dy)?abs(dx):abs(dy);
+float xlnc=dx/(float)steps;
+float ylnc=dy/(float)steps;
+float x=x1;
+float y=y1;
+for(int i=0;i<=steps;i++)
+{
+setPixel((int)(x+0.5),(int)(y+0.5));
+x+=xlnc;
+y+=ylnc;
+}
+}
