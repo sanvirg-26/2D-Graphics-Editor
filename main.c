@@ -49,3 +49,37 @@ x+=xlnc;
 y+=ylnc;
 }
 }
+void drawRectangle(int x1,int y1,int x2,int y2)
+{
+  drawLine(x1,y1,x2,y1);
+drawLine(x1,y2,x2,y2);
+drawLine(x1,y1,x1,y2);
+drawLine(x2,y1,x2,y2);
+}
+void drawCircle(int cx,int xy,int radius)
+{
+  int x=0;
+int y=radius;
+int p-1-radius;
+while(x<=y)
+{
+setPixel(cx+x,cy+y);
+setPixel(cx-x,cy+y);
+setPixel(cx+x,cy-y);
+setPixel(cx-x,cy-y);
+setPixel(cx+y,cy+x);
+setPixel(cx-y,cy+x);
+setPixel(cx+y,cy-x);
+setpixel(cx-y,cy-x);
+x++;
+if(p<0)
+{
+p+=2*x+1;
+}
+else(
+  y--;
+p+=2*(x-y)+1;
+}
+}
+}
+
