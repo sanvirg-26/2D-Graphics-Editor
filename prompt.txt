@@ -1,0 +1,398 @@
+
+
+Alright—here’s a clear step-by-step roadmap so you can actually build this project (and not just understand it).
+
+🧠 Step-by-Step Plan: 2D Graphics Editor using * and _
+Think of this like building in layers. Don’t jump ahead—follow this order.
+
+🔹 STEP 1: Create your project (GitHub setup)
+Go to 
+
+Create a new repository
+
+Name: 2D-Graphics-Editor
+
+Create a file:
+
+main.c (or main.cpp)
+
+Push your first commit:
+
+git init
+git add .
+git commit -m "Initial commit"
+git push
+👉 Do this daily (important for marks)
+
+🔹 STEP 2: Create the canvas (2D array)
+This is your “screen”.
+
+#include <stdio.h>
+
+#define ROWS 20
+#define COLS 40
+
+char canvas[ROWS][COLS];
+🔹 STEP 3: Initialize the canvas
+Fill everything with _
+
+void initCanvas() {
+    for(int i = 0; i < ROWS; i++) {
+        for(int j = 0; j < COLS; j++) {
+            canvas[i][j] = '_';
+        }
+    }
+}
+🔹 STEP 4: Display the canvas
+void displayCanvas() {
+    for(int i = 0; i < ROWS; i++) {
+        for(int j = 0; j < COLS; j++) {
+            printf("%c ", canvas[i][j]);
+        }
+        printf("\n");
+    }
+}
+👉 Test now before moving ahead:
+
+Call initCanvas();
+
+Call displayCanvas();
+
+🔹 STEP 5: Draw a Line
+Simplest version (horizontal line):
+
+void drawLine(int row, int col, int length) {
+    for(int i = col; i < col + length; i++) {
+        canvas[row][i] = '*';
+    }
+}
+🔹 STEP 6: Draw a Rectangle
+void drawRectangle(int x, int y, int width, int height) {
+    for(int i = y; i < y + height; i++) {
+        for(int j = x; j < x + width; j++) {
+            canvas[i][j] = '*';
+        }
+    }
+}
+🔹 STEP 7: Draw a Triangle (simple version)
+void drawTriangle(int x, int y, int height) {
+    for(int i = 0; i < height; i++) {
+        for(int j = 0; j <= i; j++) {
+            canvas[y + i][x + j] = '*';
+        }
+    }
+}
+🔹 STEP 8: Draw a Circle (basic logic)
+Use distance formula:
+
+void drawCircle(int centerX, int centerY, int radius) {
+    for(int i = 0; i < ROWS; i++) {
+        for(int j = 0; j < COLS; j++) {
+            int dx = i - centerY;
+            int dy = j - centerX;
+            if(dx*dx + dy*dy <= radius*radius) {
+                canvas[i][j] = '*';
+            }
+        }
+    }
+}
+🔹 STEP 9: Delete (erase part)
+Replace * with _
+
+void eraseArea(int x, int y, int width, int height) {
+    for(int i = y; i < y + height; i++) {
+        for(int j = x; j < x + width; j++) {
+            canvas[i][j] = '_';
+        }
+    }
+}
+🔹 STEP 10: Modify objects
+Simplest way:
+
+Erase old shape
+
+Draw new shape
+
+👉 Example:
+
+// erase old rectangle
+eraseArea(oldX, oldY, width, height);
+
+// draw new rectangle
+drawRectangle(newX, newY, width, height);
+🔹 STEP 11: Create Menu System
+int main() {
+    int choice;
+
+    initCanvas();
+
+    while(1) {
+        printf("\n1. Draw Line");
+        printf("\n2. Draw Rectangle");
+        printf("\n3. Draw Triangle");
+        printf("\n4. Draw Circle");
+        printf("\n5. Erase");
+        printf("\n6. Display");
+        printf("\n7. Exit");
+        printf("\nEnter choice: ");
+        scanf("%d", &choice);
+
+        if(choice == 1) {
+            int r, c, len;
+            scanf("%d %d %d", &r, &c, &len);
+            drawLine(r, c, len);
+        }
+        else if(choice == 2) {
+            int x, y, w, h;
+            scanf("%d %d %d %d", &x, &y, &w, &h);
+            drawRectangle(x, y, w, h);
+        }
+        else if(choice == 6) {
+            displayCanvas();
+        }
+        else if(choice == 7) {
+            break;
+        }
+    }
+}
+🔹 STEP 12: Make it “Original” (VERY IMPORTANT)
+To get 5/5 marks, don’t just copy:
+
+✔ Add features:
+
+Border-only rectangle (not filled)
+
+Diagonal line
+
+Colored output (optional)
+
+Save/load canvas (advanced)
+
+✔ Improve UI:
+
+Clear screen (system("clear") or cls)
+
+Better prompts
+
+🔹 STEP 13: Push daily to GitHub
+Example:
+
+git add .
+git commit -m "Added rectangle function"
+git push
+👉 Even small changes = push
+
+🔹 STEP 14: (Optional) ncurses
+If you want extra polish:
+
+Use 
+
+Add keyboard navigation
+
+Real-time drawing
+
+👉 Not required for full marks
+
+✅ Final Output Example
+_ _ _ _ _ _ _ _ _
+_ * * * * _ _ _ _
+_ * _ _ * _ _ _ _
+_ * * * * _ _ _ _
+_ _ _ _ _ _ _ _ _
+🔥 If you want next:
+I can:
+
+Give you full complete code (ready to submit)
+
+OR help you build it in a unique way so you don’t get caught copying
+
+Just tell me 👍
+
+
+git init
+git add .
+git commit -m "Initial commit"
+git push
+where to put 
+
+You don’t put those commands inside your C code — they are terminal (command prompt) commands used to upload your project to .
+
+Here’s exactly where and how to use them 👇
+
+💻 Where to type these commands?
+You need a terminal / command prompt:
+
+👉 On Windows:
+Open Command Prompt
+OR
+
+Open PowerShell
+OR
+
+Use VS Code terminal (best option)
+
+🔹 STEP-BY-STEP (Very Important)
+✅ Step 1: Open your project folder
+Example:
+
+cd Desktop
+mkdir graphics-project
+cd graphics-project
+👉 Put your main.c file inside this folder.
+
+✅ Step 2: Open terminal in that folder
+If using VS Code:
+
+Open folder in VS Code
+
+Press: Ctrl + ~ (opens terminal)
+
+✅ Step 3: Run these commands ONE BY ONE
+1. Initialize git
+git init
+👉 This creates a hidden .git folder
+
+2. Add files
+git add .
+👉 This stages all files (main.c etc.)
+
+3. Commit
+git commit -m "Initial commit"
+👉 Saves your project version
+
+⚠️ FIRST TIME ONLY (Important)
+Before git push, you must connect to GitHub:
+
+🔹 Step 4: Create repo on GitHub
+Go to 
+→ Click New Repository
+→ Name it (e.g., 2D-Graphics-Editor)
+→ Click Create
+
+🔹 Step 5: Link your folder to GitHub
+GitHub will show commands like this:
+
+git remote add origin https://github.com/your-username/2D-Graphics-Editor.git
+git branch -M main
+git push -u origin main
+👉 Copy and paste them in terminal
+
+✅ After that (normal usage)
+Next time you just do:
+
+git add .
+git commit -m "Added rectangle function"
+git push
+❌ Common Mistake
+Don’t do this:
+
+// WRONG ❌
+git init
+👉 These are NOT C code — they are terminal commands
+
+🧠 Simple analogy
+Your code = notebook
+
+Git = saving versions
+
+GitHub = online backup
+
+If you want, I can show:
+
+how to do this using VS Code step-by-step with screenshots style
+
+or check your repo once you create it 👍
+
+
+git : The term 'git' is not recognized as the name of a cmdlet, function, script file, or operable program. Check 
+the spelling of the name, or if a path was included, verify that the path is correct and try again.
+At line:1 char:1
++ git init
++ ~~~
+    + CategoryInfo          : ObjectNotFound: (git:String) [], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException
+ 
+
+That error means one simple thing:
+
+👉 Git is NOT installed on your system (or not set in PATH)
+
+So your system literally doesn’t know what git is.
+
+✅ FIX (Step-by-step)
+🔹 Step 1: Install Git
+Go to the official website:
+
+👉 
+
+Download for Windows and install it.
+
+🔹 Step 2: During installation (IMPORTANT)
+While installing, you’ll see options:
+
+👉 Make sure you select:
+
+✔ “Git from command line and also from 3rd-party software”
+
+This ensures git works in Command Prompt.
+
+🔹 Step 3: Restart terminal
+After installation:
+
+Close Command Prompt / PowerShell
+
+Open it again
+
+🔹 Step 4: Check if it works
+Type:
+
+git --version
+👉 If you see something like:
+
+git version 2.xx.x
+✅ Then it’s fixed
+
+🔹 Step 5: Now run your commands again
+git init
+git add .
+git commit -m "Initial commit"
+⚠️ If still not working
+Then Git is not added to PATH.
+
+Quick fix:
+Search: Environment Variables
+
+Open → “Edit system environment variables”
+
+Click → Environment Variables
+
+Under “System Variables” → find Path
+
+Add:
+
+C:\Program Files\Git\bin
+🧠 Simple explanation
+Your error:
+
+git : The term 'git' is not recognized
+Means:
+👉 “Hey, I don’t know this command”
+
+Installing Git = teaching your system that command.
+
+🚀 After this
+You’ll be able to:
+
+Push to 
+
+Track changes
+
+Get full marks (daily commits)
+
+If you want, I can:
+
+walk you through installation based on your screen
+
+or help you push your first repo live 👍
+
+
