@@ -2,26 +2,45 @@
 #include<stdlib.h>
 #define WIDTH 80
 #define HEIGHT 24
+#define MAX_OBJECTS 100
 #define EMPTY '_'
 #define PIXEL '*'
+#define LINE 1
+#define RECTANGLE 2
+#define CIRCLE 3
+#define TRIANGLE 4
 char picture[HEIGHT][WIDTH];
+typedef struct
+{
+int type;
+int x1,y1;
+int x2,y2;
+int x3,y3;
+int radius;
+int active;
+}Shape;
+Shape objects[MAX_OBJECTS];
+int objectCount=0;
+
 void clearPicture()
 {
-  for(int i=0;i<HEIGHT;i++)
+  int y,x;
+  for(int y=0;y<HEIGHT;y++)
 {
-for(int j=0;j<WIDTH;j++)
+for(int x=0;x<WIDTH;x++)
 {
-picture[i][j]=EMPTY;
+picture[y][x]=EMPTY;
 }
 }
 }
 void displayPicture()
 {
-  for(int i=0;i<HEIGHT;i++)
+  int y,x;
+  for(int y=0;y<HEIGHT;y++)
 {
-for(int j=0;j<WIDTH;j++)
+for(int x=0;x<WIDTH;x++)
 {
-printf("%c",picture[i][j]);
+printf("%c",picture[y][x]);
 }
 printf("\n");
 }
@@ -35,52 +54,53 @@ picture[y][x]=PIXEL;
 }
 void drawLine(int x1,int y1,int x2,int y2)
 {
-  int dx=x2-x1;
-int dy=y2-y1;
-int steps=abs(dx)>abs(dy)?abs(dx):abs(dy);
-float xlnc=dx/(float)steps;
-float ylnc=dy/(float)steps;
-float x=x1;
-float y=y1;
-for(int i=0;i<=steps;i++)
-{
-setPixel((int)(x+0.5),(int)(y+0.5));
-x+=xlnc;
-y+=ylnc;
-}
+  int dx=abs(x2-x1);
+int dy=abs(y2-y1);
+int sx=(x1<x2)?1:-1;
+  int sy=(y1<y2)?1:-1;
+  int err=dx-dy;
+  while(1)
+    {
+      setPixel(x1,y1);
+      if(x1==x2 && y1==y2)
+        break;
+      int e2=2*err;
+      if(e2>-dy)
+      {
+        err -= dy;
+        x1+=sx;
+      }
+      if(e2<dx)
+      {
+        err+=dx;
+        y1+=sy;
+      }
+  }
 }
 void drawRectangle(int x1,int y1,int x2,int y2)
 {
   drawLine(x1,y1,x2,y1);
-drawLine(x1,y2,x2,y2);
-drawLine(x1,y1,x1,y2);
 drawLine(x2,y1,x2,y2);
+drawLine(x2,y2,x1,y2);
+drawLine(x1,y2,x1,y1);
 }
 void drawCircle(int cx,int cy,int radius)
 {
-  int x=0;
-int y=radius;
-int p=1 - radius;
-while(x<=y)
-{
-setPixel(cx+x,cy+y);
-setPixel(cx-x,cy+y);
-setPixel(cx+x,cy-y);
-setPixel(cx-x,cy-y);
-setPixel(cx+y,cy+x);
-setPixel(cx-y,cy+x);
-setPixel(cx+y,cy-x);
-setPixel(cx-y,cy-x);
-x++;
-if(p<0)
-{
-p+=2*x+1;
-}
-else{
-  y--;
-p+=2*(x-y)+1;
-}
-}
+  int x,y;
+  for(y=cy-radius;y<=cy+radius;y++)
+    {
+      for(x=cx-radius;x<=cx+radius;x++)
+        {
+          int dx=x-cx;
+          int dy=y-cy;
+          int d=dx*dx+dy*dy;
+          int r2=radius*radius;
+          if(d>=r2-radius && d<=r2+radius)
+          {
+            setPixel(x,y);
+          }
+        }
+    }
 }
 void drawTriangle(int x1,int y1,int x2, int y2,int x3, int y3)
 {
@@ -88,58 +108,165 @@ void drawTriangle(int x1,int y1,int x2, int y2,int x3, int y3)
 drawLine(x2,y2,x3,y3);
 drawLine(x3,y3,x1,y1);
 }
+void redrawPicture()
+{
+int i;
+clearPicture();
+for(i=0;i<objectCount;i++)
+{
+if(!objects[i].active)
+  continue;
+switch(objects[i].type)
+{
+case LINE:
+  drawLine(
+    objects[i].x1,
+    objects[i].y1,
+    objects[i].x2,
+    objects[i].y2
+    );
+  break;
+case RECTANGLE:
+  drawRectangle(
+    objects[i].x1,
+    objects[i].y1,
+    objects[i].x2,
+    objects[i].y2
+    );
+  break;
+
+case CIRCLE:
+  drawCircle(
+    objects[i].x1,
+    objects[i].y1,
+    objects[i].radius
+    );
+  break;
+case TRIANGLE:
+  drawTriangle(
+    objects[i].x1,
+    objects[i].y1,
+    objects[i].x2,
+    objects[i].y2,
+    objects[i].x3,
+    objects[i].y3
+    );
+  break;
+}
+}
+}
+void addObject()
+{
+Shape s;
+int type;
+printf("\nChoose shape type:\n");
+printf("1.LINE\n");
+printf("2.Rectangle\n");
+printf("3.Circle\n");
+printf("4.Triangle\n");
+printf("Enter shape type:");
+
+scanf("%d",&type);
+s.type=type;
+s.active=1;
+if(type==LINE)
+{
+printf("enter x1 y1 x2 y2:");
+scanf("%d%d%d%d",&s.x1,&s.y1,&s.x2,&s.y2);
+}
+else if(type==RECTANGLE)
+{
+printf("Enter top left x y and bottom right x y:");
+scanf("%d%d%d%d",&s.x1,&s.y1,&s.x2,&s.y2);
+}
+else if(type==CIRCLE)
+{
+printf("Enter center x y and radius:");
+scanf("%d%d%d",&s.x1,&s.y1,&s.radius);
+}
+else if(type==TRIANGLE)
+{
+printf("Enter x1 y1 x2 y2 x3 y3");
+scanf("%d%d%d%d%d%d",&s.x1,&s.y1,&s.x2,&s.y2,&s.x3,&s.y3);
+}
+else
+{
+printd("Invalid shape size");
+return;
+}
+objects[objectCount]=s;
+printf("Object added with index %d.\n",objectCount);
+objectCount++;
+}
+void deleteObject()
+{
+int index;
+printf("Enter object index:");
+scanf("%d",&index);
+if(index>=0 && index<objectCount && object[index].active)
+{
+objects[index].active=0;
+printf("Object deleted.\n");
+}
+else
+{
+printf("Invalid object index.\n");
+}
+}
+void listObjects()
+{
+int i;
+printf("\nObjects:\n");
+for(i=0;i<objectCount;i++)
+{
+if(objects[i].active)
+{
+printf("Index %d Type %d\n",i,objects[i].type);
+}
+}
+}
 int main()
 {
 int choice;
 clearPicture();
+  while(1)
+    {
 printf("2D Graphics Ediotor");
 printf("Canvas size:%dx%d\n",WIDTH,HEIGHT);
-printf("Use coordinates x y.\n");
-
-while(1)
-{
-printf("\nMENU\n");
-printf("1.Draw Line\n");
-printf("2.Draw Rectangle\n");
-printf("3.Draw Circle\n");
-printf("4.Draw Triangle\n");
-printf("5.Display Pictures\n");
+printf("1.Add object\n");
+printf("2.Delete Object\n");
+printf("3.Modify Object\n");
+printf("4.Display picture\n");
+printf("5.List objects\n");
 printf("0.Exit\n");
+      printf("Enter choice");
 scanf("%d",&choice);
-if(choice==1)
-{
-int x1,y1,x2,y2;
-scanf("%d%d%d%d",&x1,&y1,&x2,&y2);
-drawLine(x1,y1,x2,y2);
-}
-else if(choice==2)
-{
-int x1,y1,x2,y2;
-scanf("%d%d%d%d",&x1,&y1,&x2,&y2);
-drawRectangle(x1,y1,x2,y2);
-}
-else if(choice==3)
-{
-int cx,cy,radius;
-scanf("%d%d%d",&cx,&cy,&radius);
-  drawCircle(cx,cy,radius);
-}
-else if(choice==4)
-{
-int x1,y1,x2,y2,x3,y3;
-scanf("%d%d%d%d%d%d",&x1,&y1,&x2,&y2,&x3,&y3);
-drawTriangle(x1,y1,x2,y2,x3,y3);
-}
-else if(choice==5)
-{
-displayPicture();
-}
-else if(choice==0)
-{
-break;
-}
-}
-return 0;
+switch(choice)
+  {
+    case 1:
+      addObject();
+      break;
+    case 2:
+      deleteObject();
+      break;
+    case 3:
+      printf("Modify object not implemented.\n");
+      break;
+    case 4:
+      redrawPicture();
+      displayPicture();
+      break;
+    case 5:
+      listObjects();
+      break;
+    case 0:
+      printf("Goodbye.\n");
+      return 0;
+    default:
+      printf("Invaild choice.\n");
+  }
+    }
+  return 0;
 }
 
   
