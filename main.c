@@ -2,8 +2,8 @@
 #include<stdlib.h>
 #define WIDTH 80
 #define HEIGHT 24
-#define EMPTY'_'
-#define PIXEL'*'
+#define EMPTY '_'
+#define PIXEL '*'
 char picture[HEIGHT][WIDTH];
 void clearPicture()
 {
@@ -56,11 +56,11 @@ drawLine(x1,y2,x2,y2);
 drawLine(x1,y1,x1,y2);
 drawLine(x2,y1,x2,y2);
 }
-void drawCircle(int cx,int xy,int radius)
+void drawCircle(int cx,int cy,int radius)
 {
   int x=0;
 int y=radius;
-int p-1-radius;
+int p=1 - radius;
 while(x<=y)
 {
 setPixel(cx+x,cy+y);
@@ -70,16 +70,76 @@ setPixel(cx-x,cy-y);
 setPixel(cx+y,cy+x);
 setPixel(cx-y,cy+x);
 setPixel(cx+y,cy-x);
-setpixel(cx-y,cy-x);
+setPixel(cx-y,cy-x);
 x++;
 if(p<0)
 {
 p+=2*x+1;
 }
-else(
+else{
   y--;
 p+=2*(x-y)+1;
 }
 }
 }
+void drawTriangle(int x1,int y1,int x2, int y2,int x3, int y3)
+{
+  drawLine(x1,y1,x2,y2);
+drawLine(x2,y2,x3,y3);
+drawLine(x3,y3,x1,y1);
+}
+int main()
+{
+int choice;
+clearPicture();
+printf("2D Graphics Ediotor");
+printf("Canvas size:%dx%d\n",WIDTH,HEIGHT);
+printf("Use coordinates x y.\n");
 
+while(1)
+{
+printf("\nMENU\n");
+printf("1.Draw Line\n");
+printf("2.Draw Rectangle\n");
+printf("3.Draw Circle\n");
+printf("4.Draw Triangle\n");
+printf("5.Display Pictures\n");
+printf("0.Exit\n");
+scanf("%d",&choice);
+if(choice==1)
+{
+int x1,y1,x2,y2;
+scanf("%d%d%d%d",&x1,&y1,&x2,&y2);
+drawLine(x1,y1,x2,y2);
+}
+else if(choice==2)
+{
+int x1,y1,x2,y2;
+scanf("%d%d%d%d",&x1,&y1,&x2,&y2);
+drawRectangle(x1,y1,x2,y2);
+}
+else if(choice==3)
+{
+int cx,cy,radius;
+scanf("%d%d%d",&cx,&cy,&radius);
+  drawCircle(cx,cy,radius);
+}
+else if(choice==4)
+{
+int x1,y1,x2,y2,x3,y3;
+scanf("%d%d%d%d%d%d",&x1,&y1,&x2,&y2,&x3,&y3);
+drawTriangle(x1,y1,x2,y2,x3,y3);
+}
+else if(choice==5)
+{
+displayPicture();
+}
+else if(choice==0)
+{
+break;
+}
+}
+return 0;
+}
+
+  
